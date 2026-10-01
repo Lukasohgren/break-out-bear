@@ -337,6 +337,37 @@ Exact:
 should remain tunable during development.
 
 
+# MULTIPLAYER CAMERA
+
+The intended camera follows the player group rather than a single character.
+
+The camera target should be calculated from the positions of all currently
+active players.
+
+When players move around the environment, the camera should smoothly follow
+the center of the group.
+
+For example, if three players form a triangle, the camera should frame the
+group from approximately the center of their positions rather than locking
+onto one specific player.
+
+The camera should maintain the established 3/4 top-down viewing angle.
+
+Long-term, the camera should be capable of adjusting its framing when players
+spread apart so that all relevant players remain visible.
+
+Potential future behaviour includes:
+
+- dynamic camera distance or zoom based on player spread,
+- configurable screen-edge padding,
+- room-specific camera boundaries,
+- maximum zoom-out distance,
+- handling players who move unusually far away from the group.
+
+These advanced behaviours should not be implemented until the basic
+group-follow camera works correctly.
+
+
 # CORE GAMEPLAY LOOP
 
 The basic gameplay loop is:

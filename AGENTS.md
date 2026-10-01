@@ -587,6 +587,16 @@ Do not implement:
 
 unless requested.
 
+The camera system should be designed so its follow target can be derived
+from multiple players rather than being permanently coupled to one Player node.
+
+For the initial implementation, a single player may be the only player in
+the scene, but the camera architecture should allow the target position to
+later represent the center of multiple active players.
+
+Do not implement multiplayer networking merely to support this future
+camera behaviour.
+
 
 # INPUT
 

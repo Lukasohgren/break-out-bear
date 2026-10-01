@@ -27,6 +27,9 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
+
 	var input_vector: Vector2 = Input.get_vector(
 		"move_left", "move_right", "move_forward", "move_backward"
 	)

@@ -3,9 +3,13 @@ extends Area3D
 @onready var carry_point: Marker3D = $"../CarryPoint"
 
 var carried_object: CarryableObject
+var interaction_enabled: bool = true
 
 
 func _physics_process(_delta: float) -> void:
+	if not interaction_enabled or not is_multiplayer_authority():
+		return
+
 	if not Input.is_action_just_pressed("interact"):
 		return
 

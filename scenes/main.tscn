@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://b72gg4y1et42v" path="res://camera/camera_rig.gd" id="2_camera_rig"]
 [ext_resource type="PackedScene" path="res://items/carryable_object.tscn" id="3_carryable"]
+[ext_resource type="Script" path="res://network/network_session.gd" id="4_network_session"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_color = Color(0.19, 0.25, 0.32, 1)
@@ -63,3 +64,39 @@ transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70
 current = true
 fov = 45.0
 far = 50.0
+
+[node name="NetworkSession" type="Node" parent="."]
+script = ExtResource("4_network_session")
+
+[node name="Players" type="Node3D" parent="NetworkSession"]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="NetworkSession"]
+spawn_path = NodePath("../Players")
+
+[node name="DebugUI" type="CanvasLayer" parent="NetworkSession"]
+
+[node name="PanelContainer" type="PanelContainer" parent="NetworkSession/DebugUI"]
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 300.0
+offset_bottom = 142.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NetworkSession/DebugUI/PanelContainer"]
+
+[node name="Title" type="Label" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer"]
+text = "Multiplayer test (UDP 7000)"
+
+[node name="Address" type="LineEdit" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer"]
+text = "127.0.0.1"
+placeholder_text = "Host IP for Join"
+
+[node name="Buttons" type="HBoxContainer" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer"]
+
+[node name="HostButton" type="Button" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer/Buttons"]
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer/Buttons"]
+text = "Join"
+
+[node name="Status" type="Label" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer"]
+text = "Offline solo"

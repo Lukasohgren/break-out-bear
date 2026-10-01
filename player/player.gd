@@ -9,6 +9,10 @@ var move_speed: float = 1.5
 @export_range(0.0, 1080.0, 10.0, "or_greater", "suffix:deg/s")
 var rotation_speed: float = 540.0
 
+@export_group("Jumping")
+@export_range(0.0, 10.0, 0.1, "or_greater", "suffix:m/s")
+var jump_velocity: float = 3.0
+
 @export_group("Gravity")
 @export_range(0.0, 50.0, 0.1, "or_greater", "suffix:m/s²")
 var gravity: float = 9.8
@@ -32,6 +36,8 @@ func _physics_process(delta: float) -> void:
 
 	if is_on_floor():
 		velocity.y = 0.0
+		if Input.is_action_just_pressed("jump"):
+			velocity.y = jump_velocity
 	else:
 		velocity.y = maxf(velocity.y - gravity * delta, -maximum_fall_speed)
 

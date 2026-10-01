@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://b72gg4y1et42v" path="res://camera/camera_rig.gd" id="2_camera_rig"]
+[ext_resource type="PackedScene" path="res://items/carryable_object.tscn" id="3_carryable"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_color = Color(0.19, 0.25, 0.32, 1)
@@ -38,6 +39,9 @@ shape = SubResource("BoxShape3D_floor")
 
 [node name="Player" parent="." unique_id=395010145 node_paths=PackedStringArray("movement_camera") instance=ExtResource("1_player")]
 movement_camera = NodePath("../CameraRig/Camera3D")
+
+[node name="CarryableObject" parent="." unique_id=707071897 instance=ExtResource("3_carryable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, -1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1158593214]
 environment = SubResource("Environment_composition")

@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://player/player_interaction.gd" id="2_interaction"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.15
@@ -15,8 +16,12 @@ material = SubResource("StandardMaterial3D_toy")
 radius = 0.15
 height = 0.5
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_interaction"]
+radius = 0.8
+
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 script = ExtResource("1_player")
+collision_mask = 3
 floor_snap_length = 0.05
 editor_description = "Toy-scale player, 0.5 m tall and 0.3 m wide. The root is at its feet; forward is local -Z. Assign Movement Camera when instancing this scene."
 
@@ -27,3 +32,15 @@ shape = SubResource("CapsuleShape3D_player")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 position = Vector3(0, 0.25, 0)
 mesh = SubResource("CapsuleMesh_toy")
+
+[node name="InteractionArea" type="Area3D" parent="."]
+position = Vector3(0, 0.25, 0)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_interaction")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource("SphereShape3D_interaction")
+
+[node name="CarryPoint" type="Marker3D" parent="."]
+position = Vector3(0, 0.55, -0.45)

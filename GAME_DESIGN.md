@@ -242,35 +242,46 @@ phase.
 
 # PLAYER MOVEMENT
 
-Initial movement should remain simple.
+Initial movement should be simple and responsive.
 
 Controls:
 
 W
-Move forward relative to the character's facing direction.
+Move forward relative to the camera/view.
 
 S
-Move backward.
+Move backward relative to the camera/view.
 
 A
-Rotate character left.
+Move left relative to the camera/view.
 
 D
-Rotate character right.
+Move right relative to the camera/view.
 
 Space
 Jump.
 
-A and D are NOT used for strafing.
+A and D are used for lateral movement / strafing, NOT character rotation.
 
-The movement system therefore behaves closer to directional / tank-style
-character movement than modern free-strafe third-person movement.
+Movement should be camera-relative so that controls remain intuitive from
+the fixed 3/4 top-down perspective.
 
-The camera does not determine character facing direction.
+For example:
 
-Players control the direction their toy is facing.
+- W moves toward the upper/forward direction of the visible game world.
+- S moves toward the lower/backward direction.
+- A moves toward the left side of the visible game world.
+- D moves toward the right side of the visible game world.
 
-Movement should feel responsive and readable rather than physically realistic.
+The camera's vertical pitch must not influence vertical player movement.
+
+The character should smoothly rotate to face its current movement direction.
+
+When the player stops moving, preserve the last facing direction.
+
+Diagonal movement must not be faster than movement along a single axis.
+
+Movement should feel responsive and game-like rather than physically realistic.
 
 
 # JUMPING

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://trmxtr7pmhd4"]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
+[ext_resource type="Script" uid="uid://b72gg4y1et42v" path="res://camera/camera_rig.gd" id="2_camera_rig"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_color = Color(0.19, 0.25, 0.32, 1)
@@ -23,7 +24,7 @@ reflected_light_source = 1
 tonemap_mode = 2
 
 [node name="Main" type="Node3D" unique_id=1253121385]
-editor_description = "Movement test with a fixed camera. Scale convention: 1 unit = 1 metre. The toy is 0.5 m tall; the floor is 6 x 6 m."
+editor_description = "Movement test with a group-follow camera. Scale convention: 1 unit = 1 metre. The toy is 0.5 m tall; the floor is 6 x 6 m."
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=463263654]
 editor_description = "The mesh and box collision share dimensions. The top surface is at world Y = 0."
@@ -35,7 +36,11 @@ mesh = SubResource("BoxMesh_floor")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=957196394]
 shape = SubResource("BoxShape3D_floor")
 
-[node name="Player" parent="." node_paths=PackedStringArray("movement_camera") instance=ExtResource("1_player")]
+[node name="Player" parent="." unique_id=395010145 node_paths=PackedStringArray("movement_camera") instance=ExtResource("1_player")]
+movement_camera = NodePath("../CameraRig/Camera3D")
+
+[node name="Player2" parent="." unique_id=1619146144 node_paths=PackedStringArray("movement_camera") instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
 movement_camera = NodePath("../CameraRig/Camera3D")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1158593214]
@@ -49,11 +54,12 @@ shadow_enabled = true
 directional_shadow_max_distance = 15.0
 
 [node name="CameraRig" type="Node3D" parent="." unique_id=671651339]
-editor_description = "Stationary camera pivot at floor centre. Adjust Rotation Y here for yaw; keep Rotation X/Z at zero so the camera's local Y remains its height."
+editor_description = "Follows the horizontal center of active players. Adjust Rotation Y here for yaw; keep Rotation X/Z at zero so the camera's local Y remains its height."
+script = ExtResource("2_camera_rig")
 
 [node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=1411819386]
-editor_description = "Perspective composition: Position Y = height (4.8 m), Position Z = horizontal distance (4 m), Rotation X = downward pitch (-50 degrees). Adjust FOV here and yaw on CameraRig. No automatic aiming or following."
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 4.5, 3.5)
+editor_description = "Local position sets height and distance; local X rotation sets pitch. Adjust FOV here and yaw on CameraRig. No automatic aiming."
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 4.8, 4)
 current = true
 fov = 45.0
 far = 50.0

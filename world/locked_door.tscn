@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://world/locked_door.gd" id="1_door"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_door"]
+albedo_color = Color(0.55, 0.2, 0.19, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_door"]
+material = SubResource("StandardMaterial3D_door")
+size = Vector3(0.8, 1.2, 0.18)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(0.8, 1.2, 0.18)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_door"]
+properties/0/path = NodePath(".:is_open")
+properties/0/spawn = false
+properties/0/replication_mode = 1
+
+[node name="LockedDoor" type="StaticBody3D"]
+script = ExtResource("1_door")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_door")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_door")

@@ -1,7 +1,9 @@
 class_name CarryableObject
 extends RigidBody3D
 
+@export var item_id: StringName = &""
 @export var holder_peer_id: int = 0
+@export var is_consumed: bool = false
 # The host sends this transform; clients apply it only while the object is free.
 @export_storage var network_transform: Transform3D = Transform3D.IDENTITY
 var is_carried: bool:
@@ -16,6 +18,7 @@ var _world_collision_layer: int
 var _world_collision_mask: int
 var _world_freeze: bool
 var _applied_holder_peer_id: int = -1
+var _applied_is_consumed: bool = false
 
 
 func _ready() -> void:
@@ -28,10 +31,12 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if _applied_holder_peer_id != holder_peer_id:
+	if _applied_holder_peer_id != holder_peer_id or _applied_is_consumed != is_consumed:
 		_carry_point = null
 		_apply_physics_state()
 
+	if is_consumed:
+		return
 	if is_carried:
 		if not is_instance_valid(_carry_point):
 			_carry_point = _find_holder_carry_point()
@@ -67,7 +72,7 @@ func end_network_session() -> void:
 
 
 func pick_up(carry_point: Marker3D, peer_id: int) -> bool:
-	if not is_multiplayer_authority() or is_carried or not is_instance_valid(carry_point):
+	if not is_multiplayer_authority() or is_consumed or is_carried or not is_instance_valid(carry_point):
 		return false
 	if peer_id <= 0:
 		return false
@@ -94,9 +99,23 @@ func drop() -> void:
 	set_physics_process(_network_session_active)
 
 
+func consume() -> bool:
+	if not is_multiplayer_authority() or is_consumed:
+		return false
+
+	holder_peer_id = 0
+	_carry_point = null
+	is_consumed = true
+	_apply_physics_state()
+	set_physics_process(_network_session_active)
+	return true
+
+
 func _apply_physics_state() -> void:
 	_applied_holder_peer_id = holder_peer_id
-	if is_carried:
+	_applied_is_consumed = is_consumed
+	visible = not is_consumed
+	if is_consumed or is_carried:
 		freeze = true
 		collision_layer = 0
 		collision_mask = 0

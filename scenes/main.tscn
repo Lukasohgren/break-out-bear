@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://b72gg4y1et42v" path="res://camera/camera_rig.gd" id="2_camera_rig"]
 [ext_resource type="PackedScene" path="res://items/carryable_object.tscn" id="3_carryable"]
 [ext_resource type="Script" path="res://network/network_session.gd" id="4_network_session"]
+[ext_resource type="PackedScene" path="res://items/key.tscn" id="5_key"]
+[ext_resource type="PackedScene" path="res://world/locked_door.tscn" id="6_locked_door"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_color = Color(0.19, 0.25, 0.32, 1)
@@ -11,10 +13,39 @@ roughness = 0.9
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 material = SubResource("StandardMaterial3D_floor")
-size = Vector3(6, 0.2, 6)
+size = Vector3(8, 0.2, 8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
-size = Vector3(6, 0.2, 6)
+size = Vector3(8, 0.2, 8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shelf"]
+albedo_color = Color(0.48, 0.4, 0.31, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_shelf"]
+material = SubResource("StandardMaterial3D_shelf")
+size = Vector3(2.5, 0.7, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shelf"]
+size = Vector3(2.5, 0.7, 2.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_color = Color(0.29, 0.36, 0.43, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_left"]
+material = SubResource("StandardMaterial3D_wall")
+size = Vector3(5.2, 1.2, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_left"]
+size = Vector3(5.2, 1.2, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_right"]
+material = SubResource("StandardMaterial3D_wall")
+size = Vector3(2, 1.2, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_right"]
+size = Vector3(2, 1.2, 0.2)
 
 [sub_resource type="Environment" id="Environment_composition"]
 background_mode = 1
@@ -26,7 +57,7 @@ reflected_light_source = 1
 tonemap_mode = 2
 
 [node name="Main" type="Node3D" unique_id=1253121385]
-editor_description = "Movement test with a group-follow camera. Scale convention: 1 unit = 1 metre. The toy is 0.5 m tall; the floor is 6 x 6 m."
+editor_description = "First puzzle test: move the box to the shelf, retrieve the key, and open the door. Scale convention: 1 unit = 1 metre."
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=463263654]
 editor_description = "The mesh and box collision share dimensions. The top surface is at world Y = 0."
@@ -41,8 +72,42 @@ shape = SubResource("BoxShape3D_floor")
 [node name="Player" parent="." unique_id=395010145 node_paths=PackedStringArray("movement_camera") instance=ExtResource("1_player")]
 movement_camera = NodePath("../CameraRig/Camera3D")
 
-[node name="CarryableObject" parent="." unique_id=707071897 instance=ExtResource("3_carryable")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, -1)
+[node name="StepBox" parent="." unique_id=707071897 instance=ExtResource("3_carryable")]
+position = Vector3(0, 0.175, 0.85)
+
+[node name="Shelf" type="StaticBody3D" parent="."]
+editor_description = "Top surface at Y = 0.7 m. Change mesh and collision dimensions together to tune the puzzle."
+position = Vector3(-1.75, 0.35, -2.25)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Shelf"]
+mesh = SubResource("BoxMesh_shelf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Shelf"]
+shape = SubResource("BoxShape3D_shelf")
+
+[node name="Key" parent="." instance=ExtResource("5_key")]
+position = Vector3(-1.75, 0.73, -2.25)
+
+[node name="WallLeft" type="StaticBody3D" parent="."]
+position = Vector3(-1.4, 0.6, 1.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallLeft"]
+mesh = SubResource("BoxMesh_wall_left")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallLeft"]
+shape = SubResource("BoxShape3D_wall_left")
+
+[node name="WallRight" type="StaticBody3D" parent="."]
+position = Vector3(3, 0.6, 1.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallRight"]
+mesh = SubResource("BoxMesh_wall_right")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallRight"]
+shape = SubResource("BoxShape3D_wall_right")
+
+[node name="LockedDoor" parent="." instance=ExtResource("6_locked_door")]
+position = Vector3(1.6, 0.6, 1.5)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1158593214]
 environment = SubResource("Environment_composition")

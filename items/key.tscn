@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://items/carryable_object.gd" id="1_carryable"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_key"]
+albedo_color = Color(1, 0.75, 0.13, 1)
+roughness = 0.45
+
+[sub_resource type="BoxMesh" id="BoxMesh_shaft"]
+material = SubResource("StandardMaterial3D_key")
+size = Vector3(0.05, 0.05, 0.24)
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+material = SubResource("StandardMaterial3D_key")
+size = Vector3(0.16, 0.05, 0.08)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_key"]
+size = Vector3(0.16, 0.06, 0.32)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_key"]
+properties/0/path = NodePath(".:holder_peer_id")
+properties/0/spawn = false
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:network_transform")
+properties/1/spawn = false
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:is_consumed")
+properties/2/spawn = false
+properties/2/replication_mode = 1
+
+[node name="Key" type="RigidBody3D" groups=["carryables"]]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_carryable")
+item_id = &"shelf_key"
+
+[node name="Shaft" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0.06)
+mesh = SubResource("BoxMesh_shaft")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, -0.1)
+mesh = SubResource("BoxMesh_head")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0, 0.02)
+shape = SubResource("BoxShape3D_key")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_key")

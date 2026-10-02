@@ -37,6 +37,7 @@ func _host() -> void:
 
 	_remove_offline_player()
 	multiplayer.multiplayer_peer = peer
+	_set_carryables_networked(true, true)
 	session_active = true
 	_set_controls_enabled(false)
 	_spawn_player(1)
@@ -57,6 +58,7 @@ func _join() -> void:
 
 	_remove_offline_player()
 	multiplayer.multiplayer_peer = peer
+	_set_carryables_networked(true, false)
 	session_active = true
 	_set_controls_enabled(false)
 	status_label.text = "Connecting to %s:%d..." % [address, PORT]
@@ -73,6 +75,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 
+	_drop_objects_held_by(peer_id)
 	slots_by_peer.erase(peer_id)
 	var player: Node = players.get_node_or_null(str(peer_id))
 	if player != null:
@@ -120,10 +123,6 @@ func _create_network_player(data: Variant) -> Node:
 	player.position = Vector3(float(SPAWN_X_OFFSETS[slot]), 0.0, 0.0)
 	player.set("movement_camera", movement_camera)
 	player.set_multiplayer_authority(peer_id, true)
-	# Carrying changes a RigidBody3D's parent and physics state, which is not replicated yet.
-	var interaction_area: Area3D = player.get_node("InteractionArea") as Area3D
-	interaction_area.set("interaction_enabled", false)
-	interaction_area.monitoring = false
 	return player
 
 
@@ -132,10 +131,7 @@ func _remove_offline_player() -> void:
 	if offline_player == null:
 		return
 
-	var interaction: Node = offline_player.get_node("InteractionArea")
-	var carried_object: CarryableObject = interaction.get("carried_object") as CarryableObject
-	if is_instance_valid(carried_object):
-		carried_object.drop()
+	_drop_objects_held_by(1)
 	offline_player.free()
 
 
@@ -144,6 +140,7 @@ func _restore_offline_player(message: String) -> void:
 		return
 
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	_set_carryables_networked(false)
 	for player in players.get_children():
 		player.free()
 	slots_by_peer.clear()
@@ -155,6 +152,24 @@ func _restore_offline_player(message: String) -> void:
 	get_parent().add_child(offline_player)
 	_set_controls_enabled(true)
 	status_label.text = message
+
+
+func _drop_objects_held_by(peer_id: int) -> void:
+	for node in get_tree().get_nodes_in_group("carryables"):
+		var object: CarryableObject = node as CarryableObject
+		if object != null and object.holder_peer_id == peer_id:
+			object.drop()
+
+
+func _set_carryables_networked(active: bool, server_simulates_physics: bool = true) -> void:
+	for node in get_tree().get_nodes_in_group("carryables"):
+		var object: CarryableObject = node as CarryableObject
+		if object == null:
+			continue
+		if active:
+			object.begin_network_session(players, server_simulates_physics)
+		else:
+			object.end_network_session()
 
 
 func _set_controls_enabled(enabled: bool) -> void:

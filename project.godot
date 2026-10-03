@@ -55,7 +55,15 @@ interact={
 
 [layer_names]
 
+3d_physics/layer_1="World"
 3d_physics/layer_2="Carryable"
+3d_physics/layer_3="Guard"
+3d_physics/layer_4="Player"
+
+[navigation]
+
+3d/default_cell_size=0.05
+3d/default_cell_height=0.05
 
 [physics]
 

@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://network/network_session.gd" id="4_network_session"]
 [ext_resource type="PackedScene" path="res://items/key.tscn" id="5_key"]
 [ext_resource type="PackedScene" path="res://world/locked_door.tscn" id="6_locked_door"]
+[ext_resource type="NavigationMesh" path="res://world/test_navigation_mesh.tres" id="7_guard_nav"]
+[ext_resource type="PackedScene" path="res://guard/guard.tscn" id="8_guard"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_color = Color(0.19, 0.25, 0.32, 1)
@@ -56,7 +58,7 @@ ambient_light_energy = 0.45
 reflected_light_source = 1
 tonemap_mode = 2
 
-[node name="Main" type="Node3D" unique_id=1253121385]
+[node name="Main" type="Node3D" unique_id=1253121385 groups=["guard_navigation_source"]]
 editor_description = "First puzzle test: move the box to the shelf, retrieve the key, and open the door. Scale convention: 1 unit = 1 metre."
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=463263654]
@@ -108,6 +110,28 @@ shape = SubResource("BoxShape3D_wall_right")
 
 [node name="LockedDoor" parent="." instance=ExtResource("6_locked_door")]
 position = Vector3(1.6, 0.6, 1.5)
+
+[node name="GuardNavigation" type="NavigationRegion3D" parent="."]
+navigation_mesh = ExtResource("7_guard_nav")
+
+[node name="GuardPatrol" type="Node3D" parent="."]
+editor_description = "Move these markers to edit the Guard patrol. Child order is the visit order. Rebake GuardNavigation after changing static geometry."
+
+[node name="Point01" type="Marker3D" parent="GuardPatrol"]
+position = Vector3(-2.8, 0, -0.4)
+
+[node name="Point02" type="Marker3D" parent="GuardPatrol"]
+position = Vector3(0.2, 0, -3.25)
+
+[node name="Point03" type="Marker3D" parent="GuardPatrol"]
+position = Vector3(2.5, 0, -2.7)
+
+[node name="Point04" type="Marker3D" parent="GuardPatrol"]
+position = Vector3(1.6, 0, 0.8)
+
+[node name="Guard" parent="." node_paths=PackedStringArray("patrol_route") instance=ExtResource("8_guard")]
+position = Vector3(-2.8, 0, -0.4)
+patrol_route = NodePath("../GuardPatrol")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1158593214]
 environment = SubResource("Environment_composition")

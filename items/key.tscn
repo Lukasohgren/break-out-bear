@@ -30,7 +30,7 @@ properties/2/replication_mode = 1
 
 [node name="Key" type="RigidBody3D" groups=["carryables"]]
 collision_layer = 2
-collision_mask = 3
+collision_mask = 11
 script = ExtResource("1_carryable")
 item_id = &"shelf_key"
 

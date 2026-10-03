@@ -36,6 +36,14 @@ func _physics_process(delta: float) -> void:
 	var movement_direction: Vector3 = _get_movement_direction(input_vector)
 	velocity.x = movement_direction.x * move_speed
 	velocity.z = movement_direction.z * move_speed
+	var carried_object: CarryableObject = _find_held_object()
+	if carried_object != null:
+		var requested_motion := Vector3(velocity.x, 0.0, velocity.z) * delta
+		var safe_motion: Vector3 = carried_object.get_safe_holder_motion(
+			$CarryPoint, requested_motion
+		)
+		velocity.x = safe_motion.x / delta
+		velocity.z = safe_motion.z / delta
 
 	if is_on_floor():
 		velocity.y = 0.0
@@ -49,6 +57,14 @@ func _physics_process(delta: float) -> void:
 
 	if not input_vector.is_zero_approx():
 		_rotate_toward_movement(delta)
+
+
+func _find_held_object() -> CarryableObject:
+	for node in get_tree().get_nodes_in_group("carryables"):
+		var object: CarryableObject = node as CarryableObject
+		if object != null and object.holder_peer_id == get_multiplayer_authority():
+			return object
+	return null
 
 
 func _get_movement_direction(input_vector: Vector2) -> Vector3:

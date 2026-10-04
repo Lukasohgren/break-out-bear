@@ -42,6 +42,9 @@ shape = SubResource("CapsuleShape3D_player")
 position = Vector3(0, 0.25, 0)
 mesh = SubResource("CapsuleMesh_toy")
 
+[node name="VisionTarget" type="Marker3D" parent="."]
+position = Vector3(0, 0.25, 0)
+
 [node name="InteractionArea" type="Area3D" parent="."]
 position = Vector3(0, 0.25, 0)
 collision_layer = 0

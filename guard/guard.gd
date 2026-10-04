@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+const WORLD_VISION_MASK: int = 1
+
 @export var patrol_route: Node3D
 
 @export_group("Patrol")
@@ -10,15 +12,46 @@ var rotation_speed: float = 360.0
 @export_range(0.05, 1.0, 0.01, "or_greater", "suffix:m")
 var patrol_point_tolerance: float = 0.18
 
+@export_group("Vision")
+@export_range(0.1, 20.0, 0.1, "or_greater", "suffix:m")
+var vision_range: float = 3.5
+## Full horizontal width of the vision cone, in degrees.
+@export_range(1.0, 179.0, 1.0, "suffix:deg")
+var vision_angle_degrees: float = 70.0
+
+@export_group("Vision Debug")
+@export var show_vision_debug: bool = true:
+	set(value):
+		show_vision_debug = value
+		if is_node_ready():
+			_update_vision_debug()
+
+## Peer IDs currently visible to this Guard; replicated from the host for debugging.
+@export var visible_player_peer_ids: PackedInt32Array = PackedInt32Array():
+	set(value):
+		visible_player_peer_ids = value
+		if is_node_ready():
+			_update_vision_debug()
+
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
+@onready var vision_origin: Marker3D = $VisionOrigin
+@onready var flashlight: SpotLight3D = $VisionOrigin/SpotLight3D
+@onready var facing_marker: MeshInstance3D = $FacingMarker
 
 var patrol_points: Array[Marker3D] = []
 var patrol_point_index: int = 0
 var _target_started: bool = false
 var _gravity: float = float(ProjectSettings.get_setting("physics/3d/default_gravity"))
+var _detected_material: StandardMaterial3D = StandardMaterial3D.new()
 
 
 func _ready() -> void:
+	flashlight.spot_range = vision_range
+	flashlight.spot_angle = vision_angle_degrees * 0.5
+	_detected_material.albedo_color = Color(1.0, 0.1, 0.1)
+	_detected_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_update_vision_debug()
+
 	if patrol_route == null:
 		push_error("Guard needs a Patrol Route reference in the Inspector.")
 		set_physics_process(false)
@@ -72,6 +105,50 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	_rotate_toward_movement(delta)
+	_update_visible_players()
+
+
+func _update_visible_players() -> void:
+	var currently_visible := PackedInt32Array()
+	for node in get_tree().get_nodes_in_group("players"):
+		var player: CharacterBody3D = node as CharacterBody3D
+		if player == null or player.is_queued_for_deletion():
+			continue
+		var target: Marker3D = player.get_node_or_null("VisionTarget") as Marker3D
+		if target == null:
+			continue
+		if _can_see_target(target.global_position):
+			currently_visible.append(player.get_multiplayer_authority())
+	currently_visible.sort()
+	if currently_visible != visible_player_peer_ids:
+		visible_player_peer_ids = currently_visible
+
+
+func _can_see_target(target_position: Vector3) -> bool:
+	var origin: Vector3 = vision_origin.global_position
+	var to_target: Vector3 = target_position - origin
+	if to_target.length_squared() > vision_range * vision_range:
+		return false
+
+	var horizontal_direction: Vector3 = to_target
+	horizontal_direction.y = 0.0
+	if not horizontal_direction.is_zero_approx():
+		var forward: Vector3 = -global_basis.z
+		forward.y = 0.0
+		var minimum_dot: float = cos(deg_to_rad(vision_angle_degrees * 0.5))
+		if forward.normalized().dot(horizontal_direction.normalized()) < minimum_dot:
+			return false
+
+	var query := PhysicsRayQueryParameters3D.create(origin, target_position, WORLD_VISION_MASK)
+	# The forward-mounted origin can overlap a wall when the Guard stands close to it.
+	query.hit_from_inside = true
+	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+
+func _update_vision_debug() -> void:
+	facing_marker.material_override = (
+		_detected_material if show_vision_debug and not visible_player_peer_ids.is_empty() else null
+	)
 
 
 func _set_patrol_target() -> void:

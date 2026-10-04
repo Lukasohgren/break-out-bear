@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://b72gg4y1et42v" path="res://camera/camera_rig.gd" id="2_camera_rig"]
 [ext_resource type="PackedScene" path="res://items/carryable_object.tscn" id="3_carryable"]
-[ext_resource type="Script" path="res://network/network_session.gd" id="4_network_session"]
+[ext_resource type="Script" uid="uid://cegu3j6rp2gry" path="res://network/network_session.gd" id="4_network_session"]
 [ext_resource type="PackedScene" path="res://items/key.tscn" id="5_key"]
 [ext_resource type="PackedScene" path="res://world/locked_door.tscn" id="6_locked_door"]
 [ext_resource type="NavigationMesh" path="res://world/test_navigation_mesh.tres" id="7_guard_nav"]
@@ -75,62 +75,62 @@ shape = SubResource("BoxShape3D_floor")
 movement_camera = NodePath("../CameraRig/Camera3D")
 
 [node name="StepBox" parent="." unique_id=707071897 instance=ExtResource("3_carryable")]
-position = Vector3(0, 0.175, 0.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.175, 0.85)
 
-[node name="Shelf" type="StaticBody3D" parent="."]
+[node name="Shelf" type="StaticBody3D" parent="." unique_id=235276855]
 editor_description = "Top surface at Y = 0.7 m. Change mesh and collision dimensions together to tune the puzzle."
-position = Vector3(-1.75, 0.35, -2.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 0.35, -2.25)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Shelf"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Shelf" unique_id=494855934]
 mesh = SubResource("BoxMesh_shelf")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Shelf"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Shelf" unique_id=228963253]
 shape = SubResource("BoxShape3D_shelf")
 
-[node name="Key" parent="." instance=ExtResource("5_key")]
-position = Vector3(-1.75, 0.73, -2.25)
+[node name="Key" parent="." unique_id=1923652830 instance=ExtResource("5_key")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 0.73, -2.25)
 
-[node name="WallLeft" type="StaticBody3D" parent="."]
-position = Vector3(-1.4, 0.6, 1.5)
+[node name="WallLeft" type="StaticBody3D" parent="." unique_id=463136917]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 0.6, 1.5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WallLeft"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallLeft" unique_id=694020464]
 mesh = SubResource("BoxMesh_wall_left")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WallLeft"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallLeft" unique_id=317521009]
 shape = SubResource("BoxShape3D_wall_left")
 
-[node name="WallRight" type="StaticBody3D" parent="."]
-position = Vector3(3, 0.6, 1.5)
+[node name="WallRight" type="StaticBody3D" parent="." unique_id=631829854]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.6, 1.5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WallRight"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallRight" unique_id=121018809]
 mesh = SubResource("BoxMesh_wall_right")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WallRight"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallRight" unique_id=955622830]
 shape = SubResource("BoxShape3D_wall_right")
 
-[node name="LockedDoor" parent="." instance=ExtResource("6_locked_door")]
-position = Vector3(1.6, 0.6, 1.5)
+[node name="LockedDoor" parent="." unique_id=261168595 instance=ExtResource("6_locked_door")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0.6, 1.5)
 
-[node name="GuardNavigation" type="NavigationRegion3D" parent="."]
+[node name="GuardNavigation" type="NavigationRegion3D" parent="." unique_id=216580089]
 navigation_mesh = ExtResource("7_guard_nav")
 
-[node name="GuardPatrol" type="Node3D" parent="."]
+[node name="GuardPatrol" type="Node3D" parent="." unique_id=1547520755]
 editor_description = "Move these markers to edit the Guard patrol. Child order is the visit order. Rebake GuardNavigation after changing static geometry."
 
-[node name="Point01" type="Marker3D" parent="GuardPatrol"]
-position = Vector3(-2.8, 0, -0.4)
+[node name="Point01" type="Marker3D" parent="GuardPatrol" unique_id=308264481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 0, -0.4)
 
-[node name="Point02" type="Marker3D" parent="GuardPatrol"]
-position = Vector3(0.2, 0, -3.25)
+[node name="Point02" type="Marker3D" parent="GuardPatrol" unique_id=322829123]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, -3.25)
 
-[node name="Point03" type="Marker3D" parent="GuardPatrol"]
-position = Vector3(2.5, 0, -2.7)
+[node name="Point03" type="Marker3D" parent="GuardPatrol" unique_id=1996961606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, -2.7)
 
-[node name="Point04" type="Marker3D" parent="GuardPatrol"]
-position = Vector3(1.6, 0, 0.8)
+[node name="Point04" type="Marker3D" parent="GuardPatrol" unique_id=1008773414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, 0.8)
 
-[node name="Guard" parent="." node_paths=PackedStringArray("patrol_route") instance=ExtResource("8_guard")]
-position = Vector3(-2.8, 0, -0.4)
+[node name="Guard" parent="." unique_id=132473106 node_paths=PackedStringArray("patrol_route") instance=ExtResource("8_guard")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 0, -0.4)
 patrol_route = NodePath("../GuardPatrol")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1158593214]
@@ -154,38 +154,45 @@ current = true
 fov = 45.0
 far = 50.0
 
-[node name="NetworkSession" type="Node" parent="."]
+[node name="NetworkSession" type="Node" parent="." unique_id=520576725]
 script = ExtResource("4_network_session")
 
-[node name="Players" type="Node3D" parent="NetworkSession"]
+[node name="Players" type="Node3D" parent="NetworkSession" unique_id=277110818]
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="NetworkSession"]
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="NetworkSession" unique_id=1416967412]
 spawn_path = NodePath("../Players")
 
-[node name="DebugUI" type="CanvasLayer" parent="NetworkSession"]
+[node name="DebugUI" type="CanvasLayer" parent="NetworkSession" unique_id=1232376535]
 
-[node name="PanelContainer" type="PanelContainer" parent="NetworkSession/DebugUI"]
+[node name="PanelContainer" type="PanelContainer" parent="NetworkSession/DebugUI" unique_id=1875703218]
 offset_left = 12.0
 offset_top = 12.0
 offset_right = 300.0
 offset_bottom = 142.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="NetworkSession/DebugUI/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="NetworkSession/DebugUI/PanelContainer" unique_id=655123992]
+layout_mode = 2
 
-[node name="Title" type="Label" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer" unique_id=377289544]
+layout_mode = 2
 text = "Multiplayer test (UDP 7000)"
 
-[node name="Address" type="LineEdit" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer"]
+[node name="Address" type="LineEdit" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer" unique_id=1328612284]
+layout_mode = 2
 text = "127.0.0.1"
 placeholder_text = "Host IP for Join"
 
-[node name="Buttons" type="HBoxContainer" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer"]
+[node name="Buttons" type="HBoxContainer" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer" unique_id=1809216177]
+layout_mode = 2
 
-[node name="HostButton" type="Button" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer/Buttons"]
+[node name="HostButton" type="Button" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer/Buttons" unique_id=1426871052]
+layout_mode = 2
 text = "Host"
 
-[node name="JoinButton" type="Button" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer/Buttons"]
+[node name="JoinButton" type="Button" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer/Buttons" unique_id=1049522693]
+layout_mode = 2
 text = "Join"
 
-[node name="Status" type="Label" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer"]
+[node name="Status" type="Label" parent="NetworkSession/DebugUI/PanelContainer/VBoxContainer" unique_id=1417265238]
+layout_mode = 2
 text = "Offline solo"
